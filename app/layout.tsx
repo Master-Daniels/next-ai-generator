@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     description: "AI-Generator Built with Nextjs 13",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode | string }) {
     return (
         <html lang="en">
             <body>{children}</body>
