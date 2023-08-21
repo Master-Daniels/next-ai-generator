@@ -36,8 +36,6 @@ const PhotoPage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-        console.log(values);
-
         try {
             setPhotos([]);
 
@@ -47,6 +45,7 @@ const PhotoPage = () => {
             const urls = response.data.map((image: { url: string }) => image.url);
 
             setPhotos(urls);
+            form.reset();
         } catch (error: any) {
             console.log(error);
         } finally {

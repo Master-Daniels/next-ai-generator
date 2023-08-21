@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as zod from "zod";
 import { useForm } from "react-hook-form";
 import Heading from "@/components/general/Heading";
-import { MessageSquare } from "lucide-react";
+import { Music } from "lucide-react";
 import { FormSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -14,11 +14,10 @@ import { useRouter } from "next/navigation";
 import { Empty } from "@/components/shared/Empty";
 import { Loader } from "@/components/shared/Loader";
 import { cn } from "@/lib/utils";
-import { BotAvatar, UserAvatar } from "@/components/shared/Avatars";
-import OpenAI from "openai";
+import axios from "axios";
 
-const ConversationPage = () => {
-    const [messages, setMessages] = useState<any[]>([]);
+const MusicPage = () => {
+    const [music, setMusic] = useState<{ audio: string; spectrogram: string }>({ audio: "", spectrogram: "" });
     const router = useRouter();
     const form = useForm<zod.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -30,25 +29,12 @@ const ConversationPage = () => {
     const isLoading = form.formState.isSubmitting;
     const onSubmit = async (values: zod.infer<typeof FormSchema>) => {
         try {
-            const userMessage = {
-                role: "user",
-                content: values.prompt,
-            };
-            const newMessages = [...messages, userMessage];
-            const response = await fetch("/api/conversation", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    messages: newMessages,
-                }),
-            });
-            const resData = await response.json();
-            setMessages((current: any) => {
-                return [...current, userMessage, resData[0].message];
-            });
+            setMusic({ audio: "", spectrogram: "" });
+
+            const response = await axios.post("/api/music", values);
+            console.log(response.data);
+
+            setMusic(response.data);
             form.reset();
         } catch (error: any) {
             // TODO: open pro model
@@ -60,11 +46,11 @@ const ConversationPage = () => {
     return (
         <div>
             <Heading
-                title="Conversation"
-                desc="Our most advanced conversation model"
-                icon={MessageSquare}
-                iconColor="text-violet-500"
-                bgColor="bg-violet-500/10"
+                title="Music Generation"
+                desc="Turn your prompts into music"
+                icon={Music}
+                iconColor="text-emerald-500"
+                bgColor="bg-emerald-500/10"
             />
             <div className="px-4 lg:px-8 mt-5 md:mt-10">
                 <Form {...form}>
@@ -80,7 +66,7 @@ const ConversationPage = () => {
                                         <Input
                                             className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                                             disabled={isLoading}
-                                            placeholder="How do I calculate the circumference of a circle?"
+                                            placeholder="Hans Zimmer Song"
                                             {...field}
                                         />
                                     </FormControl>
@@ -99,26 +85,17 @@ const ConversationPage = () => {
                         <Loader />
                     </div>
                 )}
-                {messages.length === 0 && !isLoading && <Empty label="No conversation started" />}
-                <div className="flex flex-col gap-y-4">
-                    {messages.map((message, i) => {
-                        return (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                                    message.role === "user" ? "bg-white bborder border-black/10" : "bg-muted"
-                                )}
-                            >
-                                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                                <p className="text-sm">{message.content}</p>
-                            </div>
-                        );
-                    })}
+                {music.audio.length === 0 && !isLoading && <Empty label="No music generated" />}
+                <div>
+                    {music && (
+                        <audio controls className="w-full mt-8">
+                            <source src={music.audio} />
+                        </audio>
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default ConversationPage;
+export default MusicPage;
