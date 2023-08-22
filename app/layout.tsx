@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
+import ModalProvider from "@/components/providers/ModalProvider";
 
 export const metadata: Metadata = {
     title: "AI-Generator",
@@ -12,7 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode | s
     return (
         <ClerkProvider>
             <html lang="en">
-                <body>{children}</body>
+                <body>
+                    <ModalProvider />
+                    {children}
+                </body>
             </html>
         </ClerkProvider>
     );
