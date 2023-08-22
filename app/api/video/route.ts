@@ -1,39 +1,39 @@
 import { checkApiLimit, increaseApiLimitCount } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import Replicate from "replicate";
 
-const openai: OpenAI = new OpenAI();
-
-const instructions = {
-    role: "system",
-    content:
-        "You are a code generator, you must answer only with markdown code snippets, you can also use comments for explanation.",
-};
+const replicate = new Replicate({
+    auth: process.env.REPLICATE_API_TOKEN!,
+});
 
 export async function POST(request: NextRequest) {
     try {
         const { userId } = auth();
-        const { messages } = await request.json();
+        const { prompt } = await request.json();
 
         if (!userId) return new NextResponse("Unauthorized", { status: 401 });
-        if (!messages) return new NextResponse("Messages are required", { status: 400 });
+        if (!prompt) return new NextResponse("Prompt is required", { status: 400 });
 
         const freeTrial = await checkApiLimit();
         if (!freeTrial) {
             return new NextResponse("Free Trial has expired", { status: 403 });
         }
 
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [instructions, ...messages],
-        });
+        const output = await replicate.run(
+            "anotherjesse/zeroscope-v2-xl:9f747673945c62801b13b84701c783929c0ee784e4748ec062204894dda1a351",
+            {
+                input: {
+                    prompt,
+                },
+            }
+        );
 
         await increaseApiLimitCount();
 
-        return NextResponse.json(response.choices);
+        return NextResponse.json(output);
     } catch (e: any) {
-        console.log("[CODE_ERROR]: ", e);
+        console.log("[VIDEO_ERROR]: ", e);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
