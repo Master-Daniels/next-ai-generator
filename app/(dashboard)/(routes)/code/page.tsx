@@ -16,10 +16,13 @@ import { Loader } from "@/components/shared/Loader";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { BotAvatar, UserAvatar } from "@/components/shared/Avatars";
+import { useProModal } from "@/hooks/use-pro-modal";
+import axios from "axios";
 
 const CodePage = () => {
     const [messages, setMessages] = useState<any[]>([]);
     const router = useRouter();
+    const proModal = useProModal();
     const form = useForm<zod.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -35,24 +38,16 @@ const CodePage = () => {
                 content: values.prompt,
             };
             const newMessages = [...messages, userMessage];
-            const response = await fetch("/api/code", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    messages: newMessages,
-                }),
+            const response = await axios.post("/api/code", {
+                messages: newMessages,
             });
-            const resData = await response.json();
+            const resData = await response.data;
             setMessages((current: any) => {
                 return [...current, userMessage, resData[0].message];
             });
             form.reset();
         } catch (error: any) {
-            // TODO: open pro model
-            console.log(error);
+            if (error?.response?.status === 403) proModal.onOpen();
         } finally {
             router.refresh();
         }

@@ -16,9 +16,12 @@ import { Loader } from "@/components/shared/Loader";
 import { cn } from "@/lib/utils";
 import { BotAvatar, UserAvatar } from "@/components/shared/Avatars";
 import OpenAI from "openai";
+import axios from "axios";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const ConversationPage = () => {
     const [messages, setMessages] = useState<any[]>([]);
+    const proModal = useProModal();
     const router = useRouter();
     const form = useForm<zod.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -35,23 +38,17 @@ const ConversationPage = () => {
                 content: values.prompt,
             };
             const newMessages = [...messages, userMessage];
-            const response = await fetch("/api/conversation", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    messages: newMessages,
-                }),
+            const response = await axios.post("/api/conversation", {
+                messages: newMessages,
             });
-            const resData = await response.json();
+            const resData = await response.data;
             setMessages((current: any) => {
                 return [...current, userMessage, resData[0].message];
             });
             form.reset();
         } catch (error: any) {
             // TODO: open pro model
+            if (error?.response?.status === 403) proModal.onOpen();
             console.log(error);
         } finally {
             router.refresh();

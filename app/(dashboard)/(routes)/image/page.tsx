@@ -19,10 +19,13 @@ import { Empty } from "@/components/shared/Empty";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { amountOptions, FormSchema, resolutionOptions } from "./constants";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const PhotoPage = () => {
-    const router = useRouter();
     const [photos, setPhotos] = useState<string[]>([]);
+
+    const router = useRouter();
+    const proModal = useProModal();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -47,6 +50,7 @@ const PhotoPage = () => {
             setPhotos(urls);
             form.reset();
         } catch (error: any) {
+            if (error?.response?.status === 403) proModal.onOpen();
             console.log(error);
         } finally {
             router.refresh();

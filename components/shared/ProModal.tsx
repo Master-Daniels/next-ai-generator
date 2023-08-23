@@ -8,9 +8,27 @@ import { Card } from "../ui/card";
 import { cn } from "@/lib/utils";
 import { Check, Zap } from "lucide-react";
 import { Button } from "../ui/button";
+import axios from "axios";
+import { useState } from "react";
+import { Loader } from "./Loader";
 
 const ProModal = () => {
     const proModal = useProModal();
+    const [loading, setLoading] = useState(true);
+
+    const onSubscribe = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get("/api/stripe");
+            window.location.href = response.data.url;
+        } catch (error) {
+            console.log("stripe client error", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    if (loading) return;
+
     return (
         <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
             <DialogContent>
@@ -18,7 +36,7 @@ const ProModal = () => {
                     <DialogTitle className="flex justify-center items-center flex-col gap-y-4 pb-2">
                         <div className="flex items-center gap-x-2 font-bold py-1">
                             Upgrade To AI-Generator
-                            <Badge className="uppercase text-sm py-1" variant="premium">
+                            <Badge className="uppercase text-sm py-[.20rem] px-3" variant="premium">
                                 pro
                             </Badge>
                         </div>
@@ -30,7 +48,7 @@ const ProModal = () => {
                                     <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
                                         <tool.icon className={cn("w-6 h-6", tool.color)} />
                                     </div>
-                                    <div className="font-semibold text-sm">{tool.label}</div>
+                                    <p className="font-semibold text-sm">{tool.label}</p>
                                 </div>
                                 <Check className="text-primary w-5 h-5" />
                             </Card>
@@ -38,7 +56,7 @@ const ProModal = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button size="lg" variant="premium" className="w-full">
+                    <Button size="lg" variant="premium" className="w-full" onClick={onSubscribe}>
                         Upgrade
                         <Zap className="w-4 h-4 ml-3 fill-white" />
                     </Button>
