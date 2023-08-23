@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
+
 import ModalProvider from "@/components/providers/ModalProvider";
+import ToasterProvider from "@/components/providers/ToasterProvider";
+import CrispProvider from "@/components/providers/CrispProvider";
 
 export const metadata: Metadata = {
     title: "AI-Generator",
@@ -13,8 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode | s
     return (
         <ClerkProvider>
             <html lang="en">
+                <CrispProvider />
                 <body>
                     <ModalProvider />
+                    <ToasterProvider />
                     {children}
                 </body>
             </html>

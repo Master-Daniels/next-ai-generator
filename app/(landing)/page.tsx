@@ -1,18 +1,13 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import LandingContent from "@/components/shared/LandingContent";
+import LandingHero from "@/components/shared/LandingHero";
+import LandingNavbar from "@/components/shared/LandingNavbar";
 
 export default function LandingPage() {
     return (
-        <div>
-            Landing Page (Unprotected)
-            <div>
-                <Link href="/sign-in">
-                    <Button>Sign In</Button>
-                </Link>
-                <Link href="/sign-up">
-                    <Button>Register</Button>
-                </Link>
-            </div>
+        <div className="h-full">
+            <LandingNavbar />
+            <LandingHero />
+            <LandingContent />
         </div>
     );
 }

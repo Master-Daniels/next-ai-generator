@@ -11,7 +11,7 @@ import FreeCounter from "../general/FreeCounter";
 
 const montserrat = Montserrat({ weight: "600", subsets: ["latin"] });
 
-function Sidebar({ mobile, apiLimitCount = 0 }: { mobile?: string; apiLimitCount: number }) {
+function Sidebar({ mobile, apiLimitCount = 0, isPro }: { mobile?: string; apiLimitCount: number; isPro: boolean }) {
     const pathname = usePathname();
     return (
         <div className={cn("space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white")}>
@@ -43,7 +43,7 @@ function Sidebar({ mobile, apiLimitCount = 0 }: { mobile?: string; apiLimitCount
                     ))}
                 </div>
             </div>
-            <FreeCounter apiLimitCount={apiLimitCount} />
+            <FreeCounter apiLimitCount={apiLimitCount} isPro={isPro} />
         </div>
     );
 }

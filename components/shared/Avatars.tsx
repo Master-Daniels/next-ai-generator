@@ -17,7 +17,7 @@ export const UserAvatar = () => {
 export const BotAvatar = () => {
     return (
         <Avatar className="h-8 w-8">
-            <AvatarImage src="/logo.png" />
+            <AvatarImage src="/logo.png" alt="logo" sizes="100vw" />
             <AvatarFallback>Logo </AvatarFallback>
         </Avatar>
     );

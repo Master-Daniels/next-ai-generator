@@ -11,10 +11,11 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { useState } from "react";
 import { Loader } from "./Loader";
+import { toast } from "react-hot-toast";
 
 const ProModal = () => {
     const proModal = useProModal();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const onSubscribe = async () => {
         try {
@@ -22,12 +23,17 @@ const ProModal = () => {
             const response = await axios.get("/api/stripe");
             window.location.href = response.data.url;
         } catch (error) {
-            console.log("stripe client error", error);
+            toast.error("Something went wrong");
         } finally {
             setLoading(false);
         }
     };
-    if (loading) return;
+    if (loading)
+        return (
+            <div className="grid place-content-center">
+                <Loader text="AI Generator is connecting to stripe..." />;
+            </div>
+        );
 
     return (
         <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
@@ -56,7 +62,7 @@ const ProModal = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button size="lg" variant="premium" className="w-full" onClick={onSubscribe}>
+                    <Button size="lg" variant="premium" className="w-full" onClick={onSubscribe} disabled={loading}>
                         Upgrade
                         <Zap className="w-4 h-4 ml-3 fill-white" />
                     </Button>
