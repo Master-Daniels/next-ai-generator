@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(response.choices);
     } catch (e: any) {
-        console.log("[CONSERVATION_ERROR]: ", e);
+        console.log("[CONVERSATION_ERROR]: ", e);
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }

@@ -34,10 +34,15 @@ const LandingHero = () => {
                     />
                 </div>
             </div>
-            <div className="text-sm md:text-xl font-light text-zinc-400">Creat Content using AI 10x faster.</div>
+            <div className="text-sm md:text-xl font-light text-zinc-400">
+                Create Content using AI <small>(10x faster)</small>.
+            </div>
             <div>
                 <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
-                    <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
+                    <Button
+                        variant="premium"
+                        className="md:text-lg p-4 md:p-6 rounded-full font-semibold hover:scale-110 transition duration-700"
+                    >
                         Start Generating for free
                     </Button>
                 </Link>

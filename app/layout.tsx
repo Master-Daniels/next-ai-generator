@@ -9,7 +9,7 @@ import CrispProvider from "@/components/providers/CrispProvider";
 
 export const metadata: Metadata = {
     title: "AI-Generator",
-    description: "AI-Generator Built with Nextjs 13",
+    description: "Best AI-Generator Built with Nextjs 13",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode | string }) {

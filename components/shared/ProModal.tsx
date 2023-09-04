@@ -28,12 +28,6 @@ const ProModal = () => {
             setLoading(false);
         }
     };
-    if (loading)
-        return (
-            <div className="grid place-content-center">
-                <Loader text="AI Generator is connecting to stripe..." />;
-            </div>
-        );
 
     return (
         <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>

@@ -15,7 +15,6 @@ import { Empty } from "@/components/shared/Empty";
 import { Loader } from "@/components/shared/Loader";
 import { cn } from "@/lib/utils";
 import { BotAvatar, UserAvatar } from "@/components/shared/Avatars";
-import OpenAI from "openai";
 import axios from "axios";
 import { useProModal } from "@/hooks/use-pro-modal";
 import { toast } from "react-hot-toast";
@@ -43,12 +42,9 @@ const ConversationPage = () => {
                 messages: newMessages,
             });
             const resData = await response.data;
-            setMessages((current: any) => {
-                return [...current, userMessage, resData[0].message];
-            });
+            setMessages((current: any) => [...current, userMessage, resData[0].message]);
             form.reset();
         } catch (error: any) {
-            // TODO: open pro model
             if (error?.response?.status === 403) {
                 proModal.onOpen();
             } else {
